@@ -1,0 +1,13 @@
+.next/
+node_modules/
+.env.local
+.env*.local
+*.heic
+*.HEIC
+
+# Debug
+npm-debug.log*
+.pnpm-debug.log*
+
+# OS
+.DS_Store

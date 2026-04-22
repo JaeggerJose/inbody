@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
+
+  /* Warm white backgrounds */
+  --color-base: oklch(0.99 0.006 55);
+  --color-surface: oklch(0.97 0.009 55);
+  --color-card: oklch(1 0 0);
+  --color-card-hover: oklch(0.98 0.012 55);
+
+  /* Primary orange (Claude / Cloudflare style) */
+  --color-primary: oklch(0.64 0.22 40);
+  --color-primary-dim: oklch(0.64 0.22 40 / 0.12);
+  --color-primary-glow: oklch(0.64 0.22 40 / 0.22);
+  --color-primary-text: oklch(0.99 0.006 55);
+
+  /* Metric colors */
+  --color-fat: oklch(0.54 0.2 28);
+  --color-muscle: oklch(0.5 0.18 142);
+  --color-water: oklch(0.48 0.15 222);
+  --color-bone: oklch(0.52 0.12 290);
+  --color-amber: oklch(0.72 0.18 65);
+
+  /* Text */
+  --color-text: oklch(0.16 0.02 55);
+  --color-text-muted: oklch(0.46 0.02 55);
+  --color-text-dim: oklch(0.66 0.01 55);
+
+  /* Borders */
+  --color-border: oklch(0.91 0.012 55);
+  --color-border-bright: oklch(0.64 0.22 40 / 0.38);
+
+  --radius-sm: 0.5rem;
+  --radius: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 2rem;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-base);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    position: relative;
+  }
+
+  /* Subtle warm dot grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(
+      circle,
+      oklch(0.64 0.22 40 / 0.09) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Soft warm top vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 90% 45% at 50% 0%,
+      oklch(0.64 0.22 40 / 0.06) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  main { position: relative; z-index: 2; }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-mono    { font-family: var(--font-mono); }
+
+  .glass {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 4px oklch(0 0 0 / 0.06);
+  }
+
+  .glass-hover {
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .glass-hover:hover {
+    border-color: oklch(0.64 0.22 40 / 0.25);
+    box-shadow: 0 4px 20px oklch(0.64 0.22 40 / 0.08), 0 1px 4px oklch(0 0 0 / 0.06);
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 24px var(--color-primary-glow), 0 4px 16px oklch(0 0 0 / 0.08);
+  }
+
+  .text-primary  { color: var(--color-primary); }
+  .text-teal     { color: var(--color-primary); }
+  .text-fat      { color: var(--color-fat); }
+  .text-muscle   { color: var(--color-muscle); }
+  .text-water    { color: var(--color-water); }
+  .text-bone     { color: var(--color-bone); }
+  .text-amber    { color: var(--color-amber); }
+  .text-muted    { color: var(--color-text-muted); }
+  .text-dim      { color: var(--color-text-dim); }
+
+  .bg-base    { background-color: var(--color-base); }
+  .bg-surface { background-color: var(--color-surface); }
+  .bg-card    { background-color: var(--color-card); }
+
+  .border-subtle { border-color: var(--color-border); }
+  .border-accent { border-color: var(--color-border-bright); }
+}
+
+/* Animated radial gauge */
+@keyframes gauge-fill {
+  from { stroke-dashoffset: var(--gauge-start, 283); }
+  to   { stroke-dashoffset: var(--gauge-end, 0); }
+}
+.gauge-arc {
+  animation: gauge-fill 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
