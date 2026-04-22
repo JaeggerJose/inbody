@@ -8,9 +8,13 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-async function toJpegBuffer(buffer: Buffer, mimeType: string): Promise<Buffer> {
-  const isHeic = mimeType === 'image/heic' || mimeType === 'image/heif'
-  if (!isHeic) return buffer
+function detectHeic(file: File): boolean {
+  if (file.type === 'image/heic' || file.type === 'image/heif') return true
+  return /\.(heic|heif)$/i.test(file.name)
+}
+
+async function toJpegBuffer(buffer: Buffer, file: File): Promise<Buffer> {
+  if (!detectHeic(file)) return buffer
   const sharp = (await import('sharp')).default
   return sharp(buffer).jpeg({ quality: 88 }).toBuffer()
 }
@@ -28,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     for (const file of files) {
       const rawBuffer = Buffer.from(await file.arrayBuffer())
-      const jpegBuffer = await toJpegBuffer(rawBuffer, file.type)
+      const jpegBuffer = await toJpegBuffer(rawBuffer, file)
       const fileName = generateFileName('jpg')
 
       const { error } = await supabase.storage

@@ -39,6 +39,14 @@ export function DropZone({ onFiles, disabled }: DropZoneProps) {
       'image/heic': ['.heic'],
       'image/heif': ['.heif'],
     },
+    // 部分瀏覽器對 HEIC 回傳空 MIME type，用副檔名做二次驗證
+    validator: (file) => {
+      const ext = file.name.toLowerCase().split('.').pop()
+      const allowed = ['jpg', 'jpeg', 'png', 'heic', 'heif']
+      if (allowed.includes(ext ?? '')) return null
+      if (file.type.startsWith('image/')) return null
+      return { code: 'unsupported-type', message: '不支援的格式，請使用 HEIC、JPG 或 PNG' }
+    },
     disabled,
     multiple: true,
   })
