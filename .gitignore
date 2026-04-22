@@ -11,3 +11,14 @@ npm-debug.log*
 
 # OS
 .DS_Store
+.vercel
+
+# Build artifacts
+tsconfig.tsbuildinfo
+
+# Screenshots & test assets
+*.png
+*.jpg
+
+# Playwright
+.playwright-mcp/
