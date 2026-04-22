@@ -1,16 +1,18 @@
 import OpenAI from 'openai'
 import type { AnalysisResult } from './types'
 
-const client = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY!,
-  baseURL: 'https://openrouter.ai/api/v1',
-  defaultHeaders: {
-    'HTTP-Referer': 'https://inbody-tracker.local',
-    'X-Title': 'InBody Tracker',
-  },
-})
-
 const MODEL = process.env.OPENROUTER_MODEL ?? 'google/gemini-2.0-flash'
+
+function getClient() {
+  return new OpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY ?? 'placeholder',
+    baseURL: 'https://openrouter.ai/api/v1',
+    defaultHeaders: {
+      'HTTP-Referer': 'https://inbody-tracker.vercel.app',
+      'X-Title': 'InBody Tracker',
+    },
+  })
+}
 
 export interface ImageBase64 {
   data: string
@@ -63,7 +65,7 @@ export async function analyzeInBodyImages(images: ImageBase64[]): Promise<Analys
     image_url: { url: `data:${img.mediaType};base64,${img.data}` },
   }))
 
-  const response = await client.chat.completions.create({
+  const response = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: 1024,
     messages: [
